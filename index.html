@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Ein Zettel nur für dich. Streng geheim!">
+<meta property="og:title" content="Willst du mit mir gehen?">
+<meta property="og:description" content="Ein Zettel nur für dich. Streng geheim!">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4d8dc">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23de2f5c' d='M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z'/%3E%3C/svg%3E">
+<style>
+:root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+</style>
+<title>Willst du mit mir gehen?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap">
+<style>
+/* Layout: ein herausgerissener Karo-Zettel aus dem Collegeblock liegt auf dem Tisch.
+   Eine Frage pro Zettel. Seine Schrift: blauer Kuli. Ihre Antworten: pinker Gelstift. */
+:root{
+  --desk:#f4d8dc;
+  --desk-2:#ebc0c8;
+  --doodle:rgba(196,40,84,.10);
+  --on-desk:#6b2734;
+  --paper:#fffffd;
+  --paper-fold:#e7ebf1;
+  --grid:#cfdaea;
+  --crease:rgba(40,50,90,.13);
+  --margin:#ec9c9c;
+  --ink:#1d3c99;
+  --ink-her:#cf2768;
+  --pencil:#6c707c;
+  --heart:#de2f5c;
+  --on-heart:#ffffff;
+  --shadow:rgba(90,25,40,.24);
+
+  --font-his:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --font-her:"Patrick Hand","Segoe Print","Comic Sans MS",cursive;
+  --font-util:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#2a141b; --desk-2:#1b0b10; --doodle:rgba(255,130,160,.08); --on-desk:#f3cfd7;
+    --paper:#ecebe6; --paper-fold:#d4d3cc; --grid:#bdc8d8; --crease:rgba(30,30,50,.16);
+    --margin:#d98d8d; --shadow:rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#2a141b; --desk-2:#1b0b10; --doodle:rgba(255,130,160,.08); --on-desk:#f3cfd7;
+  --paper:#ecebe6; --paper-fold:#d4d3cc; --grid:#bdc8d8; --crease:rgba(30,30,50,.16);
+  --margin:#d98d8d; --shadow:rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{
+  background:var(--desk);
+  background-image:radial-gradient(ellipse at 50% 0%, var(--desk) 30%, var(--desk-2) 100%);
+  background-attachment:fixed;
+  color:var(--on-desk);
+  font-family:var(--font-util);
+  -webkit-tap-highlight-color:transparent;
+}
+.doodles{position:fixed; inset:0; width:100%; height:100%; color:var(--doodle); pointer-events:none; z-index:0}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+.stage{
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; align-items:center; gap:18px;
+  padding-block:clamp(20px,5vh,56px) 48px;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+
+/* ---------- gefalteter Zettel (Start) ---------- */
+.intro{display:flex; flex-direction:column; align-items:center; gap:16px; padding-top:clamp(8px,5vh,56px); width:100%}
+.folded{
+  position:relative; width:min(300px,100%); max-width:100%; aspect-ratio:1/1;
+  border:0; border-radius:2px; padding:26px 26px 22px; cursor:pointer; text-align:left;
+  color:var(--ink); font-family:var(--font-his);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 1px), var(--crease) 50%, transparent calc(50% + 1px)),
+    linear-gradient(transparent calc(50% - 1px), var(--crease) 50%, transparent calc(50% + 1px)),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:100% 100%,100% 100%,22px 22px,22px 22px;
+  box-shadow:0 1px 1px var(--shadow), 0 18px 34px -14px var(--shadow);
+  transform:rotate(3deg);
+  transition:transform .35s cubic-bezier(.3,1.4,.5,1);
+  display:grid; grid-template-rows:auto 1fr auto auto; gap:2px;
+}
+.folded::after{
+  content:""; position:absolute; top:0; right:0; width:40px; height:40px;
+  background:linear-gradient(225deg, var(--desk) 50%, var(--paper-fold) 50%);
+}
+.folded:hover{transform:rotate(1deg) translateY(-5px) scale(1.02)}
+.folded:focus-visible{outline:3px dashed var(--heart); outline-offset:6px}
+.f-to{font-size:1.7rem; font-weight:600}
+.f-heart{width:46%; justify-self:center; align-self:center; overflow:visible}
+.f-heart path{fill:none; stroke:var(--heart); stroke-width:1.3; stroke-linejoin:round}
+.f-heart path + path{opacity:.7; transform:translate(.5px,.4px) rotate(3deg); transform-origin:center; transform-box:fill-box}
+.f-secret{justify-self:center; font-size:1.8rem; font-weight:700; color:var(--heart); text-decoration:underline wavy; text-underline-offset:5px; transform:rotate(-4deg)}
+.f-from{font-size:1.35rem; color:var(--pencil)}
+.tap{margin:0; font:600 .78rem/1 var(--font-util); letter-spacing:.1em; text-transform:uppercase; color:var(--on-desk)}
+.intro.opening .folded{animation:fold-away .42s ease-in forwards}
+.intro.opening .tap{opacity:0; transition:opacity .2s}
+@keyframes fold-away{to{transform:perspective(800px) rotateX(78deg) scale(.86); opacity:0}}
+
+/* ---------- der Zettel mit Fragen ---------- */
+.note{
+  position:relative; width:100%; max-width:560px;
+  padding:34px 58px 28px 46px;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:22px 22px; background-position:-1px -1px;
+  border-radius:2px;
+  box-shadow:0 1px 1px var(--shadow), 0 16px 32px -14px var(--shadow);
+  transform:rotate(var(--tilt,-.6deg));
+}
+/* Perforation vom Collegeblock */
+.note::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:22px;
+  background:radial-gradient(circle at 11px 11px, var(--desk) 0 4.5px, transparent 5.5px) 0 0/22px 22px repeat-y;
+}
+/* Korrekturrand */
+.note::after{content:""; position:absolute; top:0; bottom:0; right:40px; border-right:2px solid var(--margin); opacity:.75; pointer-events:none}
+.note.leave{animation:leave .17s ease-in forwards}
+.note.enter{animation:enter .28s cubic-bezier(.2,.8,.2,1)}
+.note.unfold{animation:unfold .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes leave{to{opacity:0; transform:translateX(-26px) rotate(-3deg)}}
+@keyframes enter{from{opacity:0; transform:translateY(12px) rotate(calc(var(--tilt,0deg) + 1.5deg))}}
+@keyframes unfold{from{opacity:0; transform:perspective(900px) rotateX(-72deg) scale(.92)}}
+
+.mm{position:absolute; top:30px; right:3px; width:36px; text-align:center; font:700 1.55rem/1 var(--font-his); color:var(--heart)}
+.mm svg{width:24px; height:24px}
+.mm path{fill:var(--heart)}
+
+.kicker{margin:0 0 2px; font:500 1.6rem/1.15 var(--font-his)}
+.question{margin:0 0 4px; font:700 clamp(2.1rem, 1.4rem + 2.6vw, 2.9rem)/1.02 var(--font-his); text-wrap:balance}
+.question:focus{outline:none}
+.hint{margin:0; font:500 1.32rem/1.2 var(--font-his); color:var(--pencil)}
+
+.opts{position:relative; display:grid; gap:4px 18px; margin:14px 0 6px}
+@media (min-width:600px){ .opts:not(.classic){grid-template-columns:repeat(2,minmax(0,1fr))} }
+.opts.classic{display:flex; flex-wrap:wrap; align-content:flex-start; gap:10px 28px; padding-top:8px}
+.opt{
+  position:relative; display:flex; align-items:center; gap:10px;
+  padding:4px 6px; margin-inline:-6px; border-radius:6px; cursor:pointer;
+  transition:transform .4s cubic-bezier(.3,1.5,.5,1);
+}
+.opts.classic .opt{flex-direction:row-reverse}
+.opt input{position:absolute; opacity:0; width:1px; height:1px; margin:0; pointer-events:none}
+.opt-t{min-width:0; font:500 1.72rem/1.08 var(--font-his)}
+.opts.classic .opt-t{font-size:2.1rem; font-weight:600}
+.box{width:30px; height:30px; flex:none; overflow:visible}
+.frame{fill:none; stroke:var(--ink); stroke-width:2; stroke-linejoin:round; transition:stroke-width .15s}
+.opt:hover .frame{stroke-width:2.7}
+.mark{fill:none; stroke:var(--ink-her); stroke-width:3.3; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset .16s ease-out}
+input:checked + .box .m1{stroke-dashoffset:0}
+input:checked + .box .m2{stroke-dashoffset:0; transition-delay:.14s}
+input:focus-visible + .box .frame{stroke:var(--heart); stroke-width:2.8}
+.opt:has(input:focus-visible){outline:2px dashed var(--heart); outline-offset:1px}
+.opt.struck .opt-t{color:var(--pencil); text-decoration:line-through; text-decoration-color:var(--heart); text-decoration-thickness:3px}
+.opt.nope{animation:nope .45s ease-in-out}
+@keyframes nope{20%{transform:translateX(-6px) rotate(-3deg)} 40%{transform:translateX(6px) rotate(2deg)} 60%{transform:translateX(-4px)} 80%{transform:translateX(3px)}}
+
+.hearts{display:grid; grid-template-columns:repeat(11,minmax(0,1fr)); gap:3px; max-width:460px; margin:16px 0 2px}
+@media (max-width:480px){ .hearts{grid-template-columns:repeat(6,minmax(0,1fr)); max-width:300px; gap:4px 8px} }
+.h{position:relative; display:block; padding:2px; border-radius:6px; cursor:pointer}
+.h input{position:absolute; opacity:0; width:1px; height:1px; margin:0; pointer-events:none}
+.h svg{display:block; width:100%; height:auto; overflow:visible}
+.h path{fill:transparent; stroke:var(--ink-her); stroke-width:1.7; stroke-linejoin:round; transform-origin:center; transform-box:fill-box; transition:fill .15s, transform .2s}
+.h:hover path{transform:scale(1.14)}
+.h.on path{fill:var(--ink-her)}
+.h.inf path{stroke:var(--heart); stroke-width:2}
+.h.inf.on path{fill:var(--heart)}
+.inf-t{position:absolute; inset:0; display:grid; place-items:center; padding-bottom:3px; font:700 .95rem/1 var(--font-util); color:var(--heart); pointer-events:none}
+.h.inf.on .inf-t{color:var(--on-heart)}
+.h:has(input:focus-visible){outline:2px dashed var(--heart); outline-offset:1px}
+.scale-read{margin:6px 0 0; min-height:1.3em; font:1.45rem/1.2 var(--font-her); color:var(--ink-her)}
+
+.own{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px; margin-top:10px}
+.own label{font:500 1.35rem/1.2 var(--font-his); color:var(--pencil)}
+.own input{
+  flex:1 1 180px; min-width:0; padding:2px 2px 1px;
+  font:1.4rem/1.3 var(--font-her); color:var(--ink-her);
+  background:transparent; border:0; border-bottom:2px dotted var(--pencil); border-radius:0;
+}
+.own input:focus{outline:none; border-bottom:2px solid var(--ink-her)}
+.write{
+  display:block; width:100%; min-height:140px; margin-top:14px; padding:8px 12px; resize:vertical;
+  font:1.45rem/1.35 var(--font-her); color:var(--ink-her); background:transparent;
+  border:2px dashed var(--pencil); border-radius:14px 4px 16px 6px;
+}
+.write:focus{outline:none; border-style:solid; border-color:var(--ink-her)}
+.write::placeholder,.own input::placeholder{color:var(--pencil); opacity:.6}
+
+.aside{margin:8px 0 0; min-height:1.5em; font:700 1.5rem/1.2 var(--font-his); color:var(--heart); transform:rotate(-1.5deg); transform-origin:left}
+.aside.pop{animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{opacity:0; transform:rotate(-1.5deg) scale(.8)}}
+.sig{margin:0; text-align:right; font:600 1.6rem/1.1 var(--font-his)}
+
+.actions,.end-foot{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-top:14px}
+.next,.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:4px 22px 7px; cursor:pointer; text-decoration:none;
+  font:700 1.65rem/1.1 var(--font-his); color:var(--ink); background:transparent;
+  border:2.5px solid var(--ink); border-radius:255px 18px 225px 18px/18px 225px 18px 255px;
+  transition:background .15s, color .15s, transform .1s;
+}
+.next.ready{background:var(--ink); color:var(--paper)}
+.next:hover,.btn:hover{background:var(--ink); color:var(--paper)}
+.next.ready:hover{background:var(--heart); border-color:var(--heart); color:var(--on-heart)}
+.next:active,.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--heart); border-color:var(--heart); color:var(--on-heart)}
+.btn.primary:hover{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+.back{padding:6px 2px; cursor:pointer; background:none; border:0; font:500 1.35rem/1 var(--font-his); color:var(--pencil); text-decoration:underline; text-decoration-style:wavy; text-underline-offset:4px; text-decoration-thickness:1px}
+.back:hover{color:var(--ink)}
+.next:focus-visible,.btn:focus-visible,.back:focus-visible{outline:2px dashed var(--heart); outline-offset:3px}
+
+.sum{display:grid; gap:12px; margin:18px 0 10px}
+.sum-row{display:grid; gap:1px; min-width:0}
+.sum dt{font:600 1.32rem/1.12 var(--font-his)}
+.sum dd{margin:0; font:1.3rem/1.25 var(--font-her); color:var(--ink-her); overflow-wrap:anywhere}
+.sum dd::before{content:"→ "; color:var(--pencil)}
+.give{margin:8px 0 10px; font:600 1.5rem/1.15 var(--font-his)}
+.end-actions{display:flex; flex-wrap:wrap; gap:10px}
+.end-actions .btn{font-size:1.45rem}
+.copy-fb{display:block; width:100%; margin-top:12px; padding:8px; font:1.05rem/1.35 var(--font-her); color:var(--ink); background:var(--paper); border:2px solid var(--ink); border-radius:6px}
+
+.prog{display:flex; flex-direction:column; align-items:center; gap:8px; font:600 .78rem/1 var(--font-util); letter-spacing:.1em; text-transform:uppercase; color:var(--on-desk); font-variant-numeric:tabular-nums}
+.prog-h{display:flex; flex-wrap:wrap; justify-content:center; gap:5px}
+.prog-h svg{width:15px; height:15px; overflow:visible}
+.prog-h path{fill:none; stroke:currentColor; stroke-width:2; opacity:.55}
+.prog-h .done path{fill:var(--heart); stroke:var(--heart); opacity:1}
+.prog-h .now path{stroke:var(--heart); stroke-width:2.8; opacity:1}
+
+#burst{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:50}
+
+@media (max-width:480px){
+  .note{padding:28px 44px 24px 32px}
+  .note::before{width:18px; background:radial-gradient(circle at 9px 11px, var(--desk) 0 3.6px, transparent 4.6px) 0 0/18px 22px repeat-y}
+  .note::after{right:32px}
+  .mm{right:1px; width:30px; font-size:1.35rem}
+  .opts.classic{gap:8px 22px}
+  .opts.classic .opt-t{font-size:1.95rem}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important; transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg class="doodles" aria-hidden="true">
+  <defs>
+    <pattern id="doodle-hearts" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-14)">
+      <path d="M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z" transform="translate(16 20) scale(1.2)" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      <path d="M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z" transform="translate(92 86) rotate(16) scale(.75)" fill="currentColor"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#doodle-hearts)"/>
+</svg>
+
+<main class="stage">
+  <div class="intro" id="intro">
+    <button type="button" class="folded" id="open" aria-label="Zettel aufklappen">
+      <span class="f-to">An: <span id="f-an">dich</span></span>
+      <svg class="f-heart" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z"/>
+        <path d="M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z"/>
+      </svg>
+      <span class="f-secret">Streng geheim!</span>
+      <span class="f-from">Von: <span id="f-von">rate mal …</span></span>
+    </button>
+    <p class="tap">Tippen zum Aufklappen</p>
+  </div>
+
+  <form class="note" id="note" hidden novalidate></form>
+  <div class="prog" id="prog" hidden></div>
+</main>
+<canvas id="burst" hidden aria-hidden="true"></canvas>
+
+<script>
+(() => {
+  'use strict';
+
+  /* Namen eintragen, dann stehen sie auf dem Zettel. Leer lassen = neutral. */
+  const AN = '';   // ihr Name
+  const VON = '';  // dein Name
+
+  const HEART = 'M12 20.6c-.4 0-7.6-4.7-9.5-9.2C.9 7.6 3.2 4.2 6.7 4.2c2.2 0 3.7 1.4 5.3 3.4 1.6-2 3.1-3.4 5.3-3.4 3.5 0 5.8 3.4 4.2 7.2-1.9 4.5-9.1 9.2-9.5 9.2z';
+
+  const Q = {
+    gehen: {
+      type: 'single', classic: true, forbid: ['Nein'], yes: 'Ja',
+      kicker: `Hey ${AN || 'du'}, ich muss dich was fragen …`,
+      title: 'Willst du mit mir gehen?',
+      options: ['Ja', 'Nein', 'Vielleicht'],
+      own: 'oder schreib was Eigenes',
+      react: { 'Ja': 'JA! Ich hab’s so gehofft.', 'Vielleicht': 'Vielleicht ist ja schon fast ein Ja.' }
+    },
+    vielleicht: {
+      type: 'multi',
+      title: 'Was bräuchte es, damit aus Vielleicht ein Ja wird?',
+      hint: 'Kreuz an, so viel du willst.',
+      options: ['Ein richtig schönes Date', 'Mehr Zeit zu zweit', 'Blumen und Schokolade', 'Ein bisschen Geduld'],
+      own: 'oder sag mir, was es wirklich bräuchte'
+    },
+    date: {
+      type: 'single',
+      title: 'Was machen wir bei unserem nächsten Date?',
+      options: ['Picknick im Park', 'Zusammen kochen', 'Kino mit viel zu viel Popcorn', 'Nachts Sterne gucken', 'Eis essen und spazieren'],
+      own: 'oder deine Idee',
+      react: {
+        'Picknick im Park': 'Ich pack die Decke ein.',
+        'Zusammen kochen': 'Ich kauf schon mal ein.',
+        'Kino mit viel zu viel Popcorn': 'Süß oder salzig? Egal, beides.',
+        'Nachts Sterne gucken': 'Ich such uns den schönsten Platz.',
+        'Eis essen und spazieren': 'Ich nehm Schoko. Und du?'
+      }
+    },
+    wann: {
+      type: 'single',
+      title: 'Wann hast du Zeit?',
+      options: ['Heute noch!', 'Diesen Freitag', 'Am Wochenende', 'Sag du, ich kann immer'],
+      own: 'oder schreib mir einen Tag',
+      react: { 'Heute noch!': 'Oh! Ich mach mich sofort fertig.' }
+    },
+    mitbringen: {
+      type: 'multi',
+      title: 'Was soll ich mitbringen?',
+      hint: 'Kreuz an, so viel du willst.',
+      options: ['Blumen', 'Schokolade', 'Deine Lieblingssnacks', 'Eine Kuscheldecke', 'Nur mich'],
+      own: 'oder was du dir wünschst',
+      react: { 'Nur mich': 'Das krieg ich hin.' }
+    },
+    name: {
+      type: 'single',
+      title: 'Wie darf ich dich ab jetzt nennen?',
+      options: ['Schatz', 'Maus', 'Liebling', 'Bärchen', 'Einfach bei meinem Namen'],
+      own: 'oder dein Wunsch-Spitzname'
+    },
+    wichtig: {
+      type: 'multi',
+      title: 'Was ist dir bei uns beiden am wichtigsten?',
+      hint: 'Mehrere Kreuze erlaubt.',
+      options: ['Ehrlichkeit', 'Viel zusammen lachen', 'Zeit zu zweit', 'Vertrauen', 'Kuscheln'],
+      own: 'oder was dir sonst wichtig ist'
+    },
+    mag: {
+      type: 'scale',
+      title: 'Wie sehr magst du mich?',
+      hint: 'Mal so viele Herzen aus, wie du willst.',
+      own: 'oder sag es mit Worten'
+    },
+    song: {
+      type: 'text', optional: true,
+      title: 'Welcher Song soll unser Song sein?',
+      placeholder: 'Titel – Interpret'
+    },
+    kuss: {
+      type: 'single',
+      title: 'Kriege ich beim nächsten Treffen einen Kuss?',
+      forbid: ['Lieber noch nicht'], yes: 'Ja',
+      options: ['Ja', 'Vielleicht', 'Zwei!', 'Lieber noch nicht'],
+      own: 'oder deine Antwort',
+      react: { 'Zwei!': 'Deal.' }
+    },
+    wunsch: {
+      type: 'text', optional: true,
+      title: 'Hast du noch einen Wunsch an mich?',
+      placeholder: 'Schreib einfach drauflos …'
+    }
+  };
+  const MAIN = ['date', 'wann', 'mitbringen', 'name', 'wichtig', 'mag', 'song', 'kuss', 'wunsch'];
+  for (const k in Q) Q[k].id = k;
+
+  const NO_CHOICE = ['Es gibt keine andere Wahl!', 'Immer noch: Es gibt keine andere Wahl!', 'Netter Versuch. Es gibt keine andere Wahl!'];
+  const TILTS = [-0.7, 0.5, -0.3, 0.8, -0.5, 0.3];
+  const KEY = 'liebeszettel-v1';
+  const FRAMES = [
+    'M4.5 5.2C11 4 20.5 3.6 27.6 4.4c.7 7.6.4 15.4-.2 23-8.2.7-15.8.8-23 .1-.6-7.4-.5-14.9.1-22.3z',
+    'M4 4.6c7.8.5 15.6.2 23.4-.4.4 7.7.9 15.3.3 23.2-7.6.4-15.3.6-23.2.3C4.3 20 3.5 12.3 4 4.6z',
+    'M5 4.2c7.2-.3 14.6.4 22.2.6-.2 7.5.6 15-.3 22.6-7.4-.4-14.9-.6-22.4.2.5-7.8.2-15.6.5-23.4z'
+  ];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const heartSvg = cls => `<svg${cls ? ` class="${cls}"` : ''} viewBox="0 0 24 24" aria-hidden="true"><path d="${HEART}"/></svg>`;
+
+  const intro = $('#intro'), note = $('#note'), prog = $('#prog'), canvas = $('#burst');
+  if (AN) $('#f-an').textContent = AN;
+  if (VON) $('#f-von').textContent = VON;
+
+  let state = { cur: null, answers: {} };
+  let noChoice = 0;
+  const struck = new Set();  // durchgestrichene Nein-Antworten, z. B. "gehen:Nein"
+
+  /* ---------- Zustand ---------- */
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!s || typeof s !== 'object') return;
+      for (const k in Q) {
+        const a = s.answers && s.answers[k];
+        if (a) state.answers[k] = {
+          sel: Array.isArray(a.sel) ? a.sel.filter(v => typeof v === 'string' && !(Q[k].forbid || []).includes(v)) : [],
+          own: typeof a.own === 'string' ? a.own : ''
+        };
+      }
+      state.cur = (s.cur === 'end' || Q[s.cur]) ? s.cur : null;
+      if (state.cur && state.cur !== 'end' && !path().includes(state.cur)) state.cur = 'gehen';
+    } catch (e) {}
+  }
+  const ans = id => state.answers[id] || (state.answers[id] = { sel: [], own: '' });
+  const first = id => (state.answers[id] && state.answers[id].sel[0]) || null;
+
+  function path() {
+    if (first('gehen') === 'Vielleicht') return ['gehen', 'vielleicht', ...MAIN];
+    return ['gehen', ...MAIN];
+  }
+  function answered(id) {
+    if (Q[id].optional) return true;
+    const a = state.answers[id];
+    return !!a && (a.sel.length > 0 || a.own.trim().length > 0);
+  }
+  const saidYes = () => first('gehen') === 'Ja';
+  function scaleLabel(v) {
+    if (v === '∞') return 'Unendlich – bis zum Mond und zurück';
+    const n = parseInt(v, 10);
+    const words = ['ein kleines bisschen', 'schon ganz gern', 'ziemlich doll', 'sehr, sehr doll', 'über alles'];
+    return `${n} von 10 Herzen – ${words[Math.min(4, Math.floor((n - 1) / 2))]}`;
+  }
+  function answerText(id) {
+    const q = Q[id], a = state.answers[id] || { sel: [], own: '' };
+    const parts = q.type === 'scale' ? (a.sel[0] ? [scaleLabel(a.sel[0])] : []) : [...a.sel];
+    if (a.own.trim()) parts.push(a.own.trim());
+    return parts.join(' · ') || '(nichts geschrieben)';
+  }
+  function summaryText() {
+    const lines = [`Mein Zettel zurück an ${VON || 'dich'} ♥`, ''];
+    for (const id of path()) lines.push(Q[id].title, '→ ' + answerText(id), '');
+    return lines.join('\n').trim();
+  }
+
+  /* ---------- Darstellung ---------- */
+  function render(celebrate) {
+    if (!state.cur) {
+      intro.hidden = false; intro.classList.remove('opening');
+      note.hidden = true; prog.hidden = true;
+      return;
+    }
+    intro.hidden = true; note.hidden = false;
+    if (state.cur === 'end') renderEnd(celebrate); else renderQuestion(state.cur);
+    refresh();
+  }
+
+  function optionsHTML(q, a) {
+    const type = q.type === 'multi' ? 'checkbox' : 'radio';
+    return `<div class="opts${q.classic ? ' classic' : ''}" id="opts" role="${type === 'radio' ? 'radiogroup' : 'group'}" aria-labelledby="q-title">` +
+      q.options.map((o, i) =>
+        `<label class="opt${struck.has(q.id + ':' + o) ? ' struck' : ''}" for="opt-${q.id}-${i}">` +
+          `<input type="${type}" name="${q.id}" id="opt-${q.id}-${i}" value="${esc(o)}"${a.sel.includes(o) ? ' checked' : ''}>` +
+          `<svg class="box" viewBox="0 0 32 32" aria-hidden="true"><path class="frame" d="${FRAMES[i % 3]}"/>` +
+          `<path class="mark m1" pathLength="1" d="M8.5 9.5c4.6 4.4 9.6 9.4 15.2 14.6"/><path class="mark m2" pathLength="1" d="M23.8 8.6c-5.2 5-10.4 10.4-15 15.6"/></svg>` +
+          `<span class="opt-t">${esc(o)}</span>` +
+        `</label>`).join('') +
+      `</div>`;
+  }
+  function scaleHTML(q, a) {
+    let h = `<div class="hearts" role="radiogroup" aria-labelledby="q-title">`;
+    for (let i = 1; i <= 10; i++) {
+      h += `<label class="h" for="opt-${q.id}-${i}"><input type="radio" name="${q.id}" id="opt-${q.id}-${i}" value="${i}"${a.sel[0] === String(i) ? ' checked' : ''}>${heartSvg()}<span class="vh">${i} von 10</span></label>`;
+    }
+    h += `<label class="h inf" for="opt-${q.id}-inf"><input type="radio" name="${q.id}" id="opt-${q.id}-inf" value="∞"${a.sel[0] === '∞' ? ' checked' : ''}>${heartSvg()}<span class="inf-t" aria-hidden="true">∞</span><span class="vh">unendlich</span></label>`;
+    return h + `</div><p class="scale-read" id="scale-read"></p>`;
+  }
+
+  function renderQuestion(id) {
+    const q = Q[id], a = ans(id), p = path(), idx = p.indexOf(id);
+    note.style.setProperty('--tilt', TILTS[idx % TILTS.length] + 'deg');
+    let h = `<div class="mm" aria-hidden="true">${idx + 1}.</div>`;
+    if (q.kicker) h += `<p class="kicker">${esc(q.kicker)}</p>`;
+    h += `<h1 class="question" id="q-title">${esc(q.title)}</h1>`;
+    if (q.hint) h += `<p class="hint">${esc(q.hint)}</p>`;
+    if (q.type === 'single' || q.type === 'multi') h += optionsHTML(q, a);
+    if (q.type === 'scale') h += scaleHTML(q, a);
+    if (q.type === 'text') {
+      h += `<textarea class="write" id="own-${id}" rows="4" maxlength="1000" placeholder="${esc(q.placeholder || '')}" aria-labelledby="q-title">${esc(a.own)}</textarea>`;
+    } else {
+      h += `<div class="own"><label for="own-${id}">${esc(q.own)}:</label><input type="text" id="own-${id}" maxlength="300" autocomplete="off" value="${esc(a.own)}"></div>`;
+    }
+    h += `<p class="aside" id="aside" aria-live="polite"></p>`;
+    if (id === 'gehen') h += `<p class="sig">– ${esc(VON || 'du weißt genau, von wem')}</p>`;
+    h += `<div class="actions">${idx > 0 ? '<button type="button" class="back" id="back">← zurück</button>' : '<span></span>'}<button type="submit" class="next" id="next">Weiter →</button></div>`;
+    note.innerHTML = h;
+
+    note.querySelectorAll(`input[name="${id}"]`).forEach(inp => inp.addEventListener('change', () => onPick(id, inp)));
+    const own = $(`#own-${id}`, note);
+    own.addEventListener('input', () => { ans(id).own = own.value; save(); refresh(); });
+    const back = $('#back', note);
+    if (back) back.addEventListener('click', () => go(p[idx - 1]));
+    if (q.type === 'scale') updateHearts();
+  }
+
+  function renderEnd(celebrate) {
+    const p = path(), g = first('gehen');
+    let head, sub;
+    if (saidYes()) { head = 'Dann ist es jetzt offiziell!'; sub = 'Ich freu mich riesig auf alles, was mit dir kommt.'; }
+    else if (g === 'Vielleicht') { head = 'Ich nehme dein Vielleicht.'; sub = 'Und ich geb mir Mühe, dass ein Ja daraus wird.'; }
+    else { head = 'Danke für deine Antworten!'; sub = 'Ich lese sie bestimmt hundertmal.'; }
+
+    note.style.setProperty('--tilt', '-0.4deg');
+    note.innerHTML =
+      `<div class="mm" aria-hidden="true">${heartSvg()}</div>` +
+      `<p class="kicker">Zettel fertig ausgefüllt</p>` +
+      `<h1 class="question">${esc(head)}</h1>` +
+      `<p class="hint">${esc(sub)}</p>` +
+      `<dl class="sum">${p.map(id => `<div class="sum-row"><dt>${esc(Q[id].title)}</dt><dd>${esc(answerText(id))}</dd></div>`).join('')}</dl>` +
+      `<p class="give">Jetzt nur noch den Zettel zurückgeben:</p>` +
+      `<div class="end-actions">` +
+        `<a class="btn primary" id="wa" href="https://wa.me/?text=${encodeURIComponent(summaryText())}" target="_blank" rel="noopener">Per WhatsApp zurückschicken</a>` +
+        `<button type="button" class="btn" id="copy">Antworten kopieren</button>` +
+      `</div>` +
+      `<textarea class="copy-fb" id="copy-fallback" rows="7" readonly hidden aria-label="Deine Antworten als Text"></textarea>` +
+      `<div class="end-foot"><button type="button" class="back" id="edit">← Antworten ändern</button><button type="button" class="back" id="reset">Nochmal von vorne</button></div>`;
+
+    const copy = $('#copy', note), fb = $('#copy-fallback', note), reset = $('#reset', note);
+    copy.addEventListener('click', () => {
+      const text = summaryText();
+      const fallback = () => {
+        fb.hidden = false; fb.value = text; fb.focus(); fb.select();
+        copy.textContent = 'Text markiert – jetzt kopieren';
+      };
+      try {
+        navigator.clipboard.writeText(text).then(() => { copy.textContent = 'Kopiert!'; }, fallback);
+      } catch (e) { fallback(); }
+    });
+    $('#edit', note).addEventListener('click', () => go(p[p.length - 1]));
+    reset.addEventListener('click', () => {
+      if (reset.dataset.armed) {
+        state = { cur: null, answers: {} }; noChoice = 0; struck.clear(); save(); render();
+        return;
+      }
+      reset.dataset.armed = '1';
+      reset.textContent = 'Sicher? Nochmal tippen';
+      setTimeout(() => { if (reset.isConnected) { delete reset.dataset.armed; reset.textContent = 'Nochmal von vorne'; } }, 3500);
+    });
+    if (celebrate && saidYes()) burst();
+  }
+
+  function refresh() {
+    renderProgress();
+    const next = $('#next', note);
+    if (!next || !Q[state.cur]) return;
+    const p = path();
+    next.textContent = p.indexOf(state.cur) === p.length - 1 ? 'Fertig!' : 'Weiter →';
+    next.classList.toggle('ready', answered(state.cur));
+  }
+
+  function renderProgress() {
+    if (!state.cur || state.cur === 'end') { prog.hidden = true; return; }
+    const p = path(), idx = p.indexOf(state.cur);
+    prog.hidden = false;
+    prog.innerHTML = `<span>Frage ${idx + 1} von ${p.length}</span><span class="prog-h" aria-hidden="true">` +
+      p.map((_, i) => heartSvg(i < idx ? 'done' : i === idx ? 'now' : '')).join('') + `</span>`;
+  }
+
+  function updateHearts() {
+    const v = first('mag');
+    const n = v === '∞' ? 11 : (parseInt(v, 10) || 0);
+    note.querySelectorAll('.h').forEach((h, i) => h.classList.toggle('on', i < n));
+    $('#scale-read', note).textContent = v ? scaleLabel(v) : 'Noch kein Herz ausgemalt.';
+  }
+
+  function aside(text) {
+    const el = $('#aside', note);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+  }
+
+  /* ---------- Eingaben ---------- */
+  function onPick(id, inp) {
+    const q = Q[id], a = ans(id);
+    // Negative Antworten gibt es nicht: stattdessen wird Ja angekreuzt
+    const forced = inp.checked && q.forbid && q.forbid.includes(inp.value);
+    if (forced) {
+      inp.checked = false;
+      const yes = note.querySelector(`input[name="${id}"][value="${q.yes}"]`);
+      if (yes) yes.checked = true;
+      struck.add(id + ':' + inp.value);
+      const label = inp.closest('.opt');
+      label.classList.add('struck');
+      label.classList.remove('nope'); void label.offsetWidth; label.classList.add('nope');
+    }
+    a.sel = [...note.querySelectorAll(`input[name="${id}"]:checked`)].map(i => i.value);
+    save();
+    if (forced) {
+      aside(NO_CHOICE[Math.min(noChoice++, NO_CHOICE.length - 1)]);
+    } else if (q.type === 'scale') {
+      updateHearts();
+      if (inp.value === '∞') { aside('Ich dich auch. Mindestens.'); burst(); }
+    } else if (inp.checked && q.react && q.react[inp.value]) {
+      aside(q.react[inp.value]);
+    }
+    if (id === 'gehen' && a.sel[0] === 'Ja' && (forced || inp.value === 'Ja')) burst();
+    refresh();
+  }
+
+  note.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!Q[state.cur]) return;
+    if (!answered(state.cur)) { aside('Kreuz erst was an – oder schreib was Eigenes.'); return; }
+    const p = path(), idx = p.indexOf(state.cur);
+    go(idx < p.length - 1 ? p[idx + 1] : 'end');
+  });
+
+  $('#open').addEventListener('click', () => {
+    const show = () => {
+      state.cur = 'gehen'; save(); render();
+      if (!reduced) note.classList.add('unfold');
+      focusTop();
+    };
+    if (reduced) return show();
+    intro.classList.add('opening');
+    setTimeout(show, 420);
+  });
+
+  note.addEventListener('animationend', e => { if (e.target === note) note.classList.remove('enter', 'unfold'); });
+
+  function go(id) {
+    const swap = () => { state.cur = id; save(); render(id === 'end'); focusTop(); };
+    if (reduced) return swap();
+    note.classList.remove('enter', 'unfold');
+    note.classList.add('leave');
+    setTimeout(() => {
+      note.classList.remove('leave');
+      swap();
+      void note.offsetWidth;
+      note.classList.add('enter');
+    }, 170);
+  }
+
+  function focusTop() {
+    const h = $('.question', note);
+    if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    if (note.getBoundingClientRect().top < 0) note.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  /* ---------- Herzchen-Regen ---------- */
+  let burstRaf = 0;
+  function burst() {
+    if (reduced) return;
+    cancelAnimationFrame(burstRaf);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = innerWidth, H = innerHeight;
+    canvas.hidden = false;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cs = getComputedStyle(document.documentElement);
+    const colors = ['--heart', '--ink-her', '--margin'].map(v => cs.getPropertyValue(v).trim() || '#de2f5c');
+    const shape = new Path2D(HEART);
+    const parts = Array.from({ length: 48 }, (_, i) => ({
+      x: W / 2 + (Math.random() - .5) * Math.min(W, 560) * .6,
+      y: H * .58,
+      vx: (Math.random() - .5) * 10,
+      vy: -(7 + Math.random() * 9),
+      s: .7 + Math.random() * 1.1,
+      r: (Math.random() - .5) * .8,
+      vr: (Math.random() - .5) * .1,
+      c: colors[i % colors.length]
+    }));
+    const t0 = performance.now(), LIFE = 1800;
+    const frame = t => {
+      const el = t - t0;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = Math.max(0, 1 - el / LIFE);
+      for (const p of parts) {
+        p.vy += .3; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.scale(p.s, p.s); ctx.translate(-12, -12);
+        ctx.fillStyle = p.c; ctx.fill(shape);
+        ctx.restore();
+      }
+      if (el < LIFE) burstRaf = requestAnimationFrame(frame);
+      else { ctx.clearRect(0, 0, W, H); canvas.hidden = true; }
+    };
+    burstRaf = requestAnimationFrame(frame);
+  }
+
+  load();
+  render();
+})();
+</script>
+</body>
+</html>
